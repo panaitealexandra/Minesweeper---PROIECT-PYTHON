@@ -7,6 +7,7 @@ poată seta numărul de bombe utilizate și un timp limita (în secunde) în car
 tabla.
 
 **INPUT**: minesweeper.py
+
 **OUTPUT**: interfata grafica cu jocul
 
 
