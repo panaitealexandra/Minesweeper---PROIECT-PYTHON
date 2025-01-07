@@ -10,19 +10,25 @@ class Game:
         self.width = width
         self.height = height
         self.mines = mines
-        self.screen = pygame.display.set_mode((width * tile_size, height * tile_size))
+        self.screen = pygame.display.set_mode((width * tile_size, height * tile_size + 50))  
         pygame.display.set_caption("Minesweeper Game")
         self.clock = pygame.time.Clock()
+        self.start_time = None  
+        self.font_size = max(12, min(24, (self.width * tile_size) // 10))
+        self.font = pygame.font.SysFont("Comic Sans MS", self.font_size)  
     
     def new(self):
         self.board = Board(self.width, self.height, self.mines)
+        self.start_time = pygame.time.get_ticks()  
         self.board.display()
+
 
     def run(self):
         self.playing = True
         while self.playing:
             self.events()
             self.draw()
+            self.clock.tick(30) 
 
     def events(self):
         for event in pygame.event.get():
@@ -103,7 +109,12 @@ class Game:
 
 
     def draw(self):
-        self.screen.fill((0, 0, 0))
+        self.screen.fill((211, 211, 211))
         self.board.draw(self.screen)
+
+        elapsed_time = (pygame.time.get_ticks() - self.start_time) // 1000  
+        timer_text = self.font.render(f"Time: {elapsed_time} sec", True, (0,0,0))
+        self.screen.blit(timer_text, (10, self.height * tile_size + 10))  
+
         pygame.display.flip()
   
