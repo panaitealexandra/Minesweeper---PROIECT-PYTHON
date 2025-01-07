@@ -29,6 +29,14 @@ class Board:
                     self.dig(row, col)
         return True
 
+    def check_win(self):
+        for row in self.tiles:
+            for tile in row:
+                if (tile.type == "1" and not tile.flagged) or (tile.type != "1" and tile.flagged):
+                    return False
+        return True
+
+
     def place_clues(self):
         for y in range(rows):
             for x in range(cols):
