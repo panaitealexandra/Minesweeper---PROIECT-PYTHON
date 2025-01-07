@@ -1,13 +1,17 @@
 import random
 import pygame
-from config import *
+from config import tiles
+from config import tile_size
 from tile import Tile
 
 
 class Board:
-    def __init__(self):
+    def __init__(self, rows, cols, mines):
+        self.rows = rows
+        self.cols = cols
+        self.mines = mines
         self.tiles = [[Tile(x, y, tiles["empty"], "0") for x in range(rows)] for y in range(cols)]
-        self.surface = pygame.Surface((width, height))
+        self.surface = pygame.Surface((rows * tile_size, cols * tile_size))
         self.place_mines()
         self.place_clues()
         self.dug = []
@@ -23,8 +27,8 @@ class Board:
             return True
         self.tiles[y][x].revealed = True
 
-        for row in range(max(0, x-1), min(rows-1, x+1) + 1):
-            for col in range(max(0, y-1), min(cols-1, y+1) + 1):
+        for row in range(max(0, x-1), min(self.rows-1, x+1) + 1):
+            for col in range(max(0, y-1), min(self.cols-1, y+1) + 1):
                 if (row, col) not in self.dug:
                     self.dig(row, col)
         return True
@@ -38,8 +42,8 @@ class Board:
 
 
     def place_clues(self):
-        for y in range(rows):
-            for x in range(cols):
+        for y in range(self.rows):
+            for x in range(self.cols):
                 if self.tiles[y][x].type == "0":
                     nr_mines = self.calculate_clues(x, y)
                     if nr_mines > 0:
@@ -51,17 +55,17 @@ class Board:
         nr_mines = 0
         for i in range(-1, 2):
             for j in range(-1, 2):
-                if 0 <= x + i < rows and 0 <= y + j < cols:
+                if 0 <= x + i < self.rows and 0 <= y + j < self.cols:
                     if self.tiles[y + j][x + i].type == "1":
                         nr_mines = nr_mines + 1
         return nr_mines
     
     
     def place_mines(self):
-        for _ in range(mines):
-            x, y = random.randint(0, rows - 1), random.randint(0, cols - 1)
+        for _ in range(self.mines):
+            x, y = random.randint(0, self.rows - 1), random.randint(0, self.cols - 1)
             while self.tiles[y][x].type == "1":
-                x, y = random.randint(0, rows - 1), random.randint(0, cols - 1)
+                x, y = random.randint(0, self.rows - 1), random.randint(0, self.cols - 1)
             self.tiles[y][x].type = "1"
             self.tiles[y][x].img = tiles["mine"]
 

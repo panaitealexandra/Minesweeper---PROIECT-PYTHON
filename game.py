@@ -1,15 +1,21 @@
 import pygame
-from config import *
+from config import tiles
+from config import tile_size
 from board import Board
+from menu import Menu
 
 class Game:
-    def __init__(self):
+    def __init__(self, width, height, mines):
         pygame.init()
-        self.screen = pygame.display.set_mode((width, height))
+        self.width = width
+        self.height = height
+        self.mines = mines
+        self.screen = pygame.display.set_mode((width * tile_size, height * tile_size))
+        pygame.display.set_caption("Minesweeper Game")
         self.clock = pygame.time.Clock()
     
     def new(self):
-        self.board = Board()
+        self.board = Board(self.width, self.height, self.mines)
         self.board.display()
 
     def run(self):
@@ -54,16 +60,20 @@ class Game:
 
 
     def game_over(self, message):
-        overlay = pygame.Surface((width, height))
+        overlay = pygame.Surface((self.width * tile_size, self.height * tile_size))
         overlay.set_alpha(128)  
-        overlay.fill((0, 0, 0))  
+        overlay.fill((0, 0, 255))  
 
 
-        font = pygame.font.SysFont("Verdana", 48)  
+        font_size = max(24, min(48, (self.width * tile_size) // 10))
+        font = pygame.font.SysFont("Comic Sans MS", font_size)
         rendered_lines = []
         for idx, line in enumerate(message.split("\n")):
             text = font.render(line, True, (255, 255, 255)) 
-            text_rect = text.get_rect(center=(width // 2, height // 3 + idx * 50))
+            text_rect = text.get_rect(center=(
+                (self.width * tile_size) // 2,  
+                (self.height * tile_size) // 3 + idx * (font_size + 10)  
+            ))
             rendered_lines.append((text, text_rect))
 
         self.screen.blit(overlay, (0, 0))
@@ -79,8 +89,14 @@ class Game:
                     quit()  
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_r:  
-                        self.new()
-                        self.run()
+                        menu = Menu()
+                        menu.run()
+                        rows, cols = menu.width, menu.height
+                        mines = menu.mines
+                        width, height = rows * tile_size, cols * tile_size
+                        game = Game(menu.width, menu.height, menu.mines)
+                        game.new()
+                        game.run()
                     elif event.key == pygame.K_q:  
                         pygame.quit()
                         quit()  
