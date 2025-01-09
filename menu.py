@@ -4,9 +4,29 @@ from config import *
 
 ##class Menu
 
+'''
+Clasa Menu este responsabila pentru afisarea meniului principal si preluarea dimensiunilor si 
+numarului de mine de la utilizator.
+Permite utilizatorului sa configureze parametrii jocului inainte de start.
+
+Atribute:
+    - screen: suprafata de afisare
+    - clock: obiectul pentru gestionarea timpului
+    - running: variabila care indica daca meniul este activ
+    - width, height: dimensiunile tablei de joc
+    - mines: numarul de mine de pe tabla
+    - active_field: campul activ pentru modificare
+    - error_message: mesaj de eroare afisat in caz de parametrii invalidi
+
+'''
 
 class Menu:
     def __init__(self):
+
+        '''
+        Constructorul clasei Menu.
+
+        '''
         pygame.init()
         self.screen = pygame.display.set_mode((width, height))
         pygame.display.set_caption("Minesweeper Game")
@@ -20,11 +40,23 @@ class Menu:
         self.error_message = None  
 
     def run(self):
+        '''
+        Metoda run ruleaza bucla principala a meniului.
+
+        '''
         while self.running:
             self.events()
             self.draw()
 
+
+    
     def events(self):
+    
+        '''
+        Metoda events gestioneaza inputul utilizatorului cu ajutorul tastaturii.
+
+        '''
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -65,6 +97,12 @@ class Menu:
                         self.mines = self.mines * 10 + digit
 
     def draw(self):
+        
+        '''
+        Metoda draw deseneaza meniul principal pe ecran.
+        
+        '''
+
         self.screen.fill((147, 112, 219))
         font = pygame.font.SysFont("Comic Sans MS", 32)
         small_font = pygame.font.SysFont("Comic Sans MS", 24)
